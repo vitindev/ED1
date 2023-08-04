@@ -39,7 +39,7 @@ int pop(Stack *stack) {
     return stack->item[top--];
 }
 
-void call(){
+void call() {
 
     initStack();
 
