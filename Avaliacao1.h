@@ -1,7 +1,35 @@
 
+/* QUESTÃO 1
+ * Resposta: Certo
+ * */
 
+/* QUESTÃO 2
+ * Resposta: Certo
+ * */
+
+/* QUESTÃO 3
+ * Resposta: Letra C
+ * */
+
+/* QUESTÃO 4
+ * Resposta: Estrutura de dados, para mim, seria como os dados são armazenados e utilizados.
+ * Sobre a importancia, seria facilidade na manipulação, eficiencia muitas vezes, otimização além da organização
+ * e metodos de uso, como a pilha.
+ * */
+
+/* QUESTÃO 5
+ * Resposta: Temos a alocação dinamica e estatica.
+ * Estatica -> Seria a qual temos um limite bem definido, como um int array[100], então só poderemos utilizar esses 100 espaços.
+ * Dinamica -> Serial a qual temos um limite variavel que muda de acordo com a demanda. Exemplo: Se temos um array de 50 posições
+ * e precisamos de mais, usamos funções definidas para alocar mais espaços como o malloc e da mesma forma que aumentamos os espaços
+ * podemos diminuir e liberar a memoria usando a função free.
+ * */
 
 /* QUESTÃO 6 */
+
+int randNumber(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
 
 typedef struct {
 
@@ -31,7 +59,7 @@ void av6() {
     printf("\nDigite a quantidade de produtos que deseja cadastrar:\n");
     scanf("%d", &size);
 
-    Produto *produto[size];
+    Produto *product = (Produto *) malloc(size * sizeof(Produto));
 
     while (option != 0) {
 
@@ -42,8 +70,6 @@ void av6() {
         printf("\n0 - Sair\n");
 
         scanf("%d", &option);
-        getchar();
-
         system("cls");
 
         if (option == 1) {
@@ -53,22 +79,19 @@ void av6() {
                 return;
             }
 
-            Produto product = *produto[amount];
-
             printf("Insercao de Produto:\n\n");
             printf("Digite o codigo do produto: ");
-            scanf("%d", &product.codeId);
+            scanf("%d", &product->codeId);
 
             printf("Digite a quantidade inicial de estoque: ");
-            scanf("%d", &product.amountAvailable);
+            scanf("%d", &product->amountAvailable);
 
             printf("Digite o preco: ");
-            scanf("%f", &product.price);
+            scanf("%f", &product->price);
 
             getchar();
             printf("De um nome para esse produto: ");
-            scanf("%[0-9a-zA-Z,. ]", product.name);
-            getchar();
+            fgets(product->name, sizeof(product->name), stdin);
 
             amount++;
 
@@ -76,10 +99,11 @@ void av6() {
 
             char productName[100];
 
+            getchar();
             printf("Digite o nome do produto que deseja buscar:\n");
-            scanf("%[0-9a-zA-Z,. ]", productName);
+            fgets(productName, sizeof(productName), stdin);
 
-            int productPos = searchProduct(size, produto, productName);
+            int productPos = searchProduct(size, product, productName);
 
             system("cls");
 
@@ -89,13 +113,13 @@ void av6() {
 
             } else {
 
-                Produto product = *produto[productPos];
+                Produto searchedProd = product[productPos];
 
                 printf("Descricao do produto: ");
-                printf("\nCodigo: %d", product.codeId);
-                printf("\nNome: %s", product.name);
-                printf("\nQuantidade disponivel: %d", product.amountAvailable);
-                printf("\nPreco: %0.2f", product.price);
+                printf("\nCodigo: %d", searchedProd.codeId);
+                printf("\nNome: %s", searchedProd.name);
+                printf("\nQuantidade disponivel: %d", searchedProd.amountAvailable);
+                printf("\nPreco: %0.2f", searchedProd.price);
 
             }
 
@@ -103,11 +127,12 @@ void av6() {
 
             char productName[100];
 
+            getchar();
             printf("Digite o nome do produto que deseja apagar:\n");
-            scanf("%[0-9a-zA-Z,. ]", productName);
+            fgets(productName, sizeof(productName), stdin);
 
-            int productPos = searchProduct(size, produto, productName);
-            Produto prod = *produto[productPos], copyProd;
+            int productPos = searchProduct(size, product, productName);
+            Produto searchedProd = product[productPos];
 
             for (int i = 0; i < size; i++) {
 
@@ -120,44 +145,38 @@ void av6() {
 
                     // LIMPAR PRIMEIRO PARA EVITAR QUALQUER PROBLEMA FUTURO
 
-                    for (int i = 0; i < 100; i++) {
-                        prod.name[i] = '\0';
+                    for (int i = 0; i < 100; i++)
+                        searchedProd.name[i] = '\0';
 
-                        printf("Number: %d", i);
-
-                    }
-
-                    printf("Sumiu -> %s", prod.name);
-
-                    prod.price = 0;
-                    prod.codeId = -1;
-                    prod.amountAvailable = 0;
+                    searchedProd.price = 0;
+                    searchedProd.codeId = -1;
+                    searchedProd.amountAvailable = 0;
 
                 } else {
 
                     printf("DELETE POS");
 
-                    copyProd = *produto[i + 1];
+                    Produto cloneProd = product[i + 1];
 
                     // LIMPAR PRIMEIRO PARA EVITAR QUALQUER PROBLEMA FUTURO
 
                     for (int i = 0; i < 100; i++)
-                        prod.name[i] = '\0';
+                        searchedProd.name[i] = '\0';
 
                     for (int i = 0; i < 100; i++) {
-                        prod.name[i] = copyProd.name[i];
-                        copyProd.name[i] = '\0';
+                        searchedProd.name[i] = cloneProd.name[i];
+                        cloneProd.name[i] = '\0';
                     }
 
-                    prod.price = copyProd.price;
-                    prod.codeId = copyProd.codeId;
-                    prod.amountAvailable = copyProd.amountAvailable;
+                    searchedProd.price = cloneProd.price;
+                    searchedProd.codeId = cloneProd.codeId;
+                    searchedProd.amountAvailable = cloneProd.amountAvailable;
 
                     // LIMPANDO A PRÓXIMA POSIÇÃO
 
-                    copyProd.price = 0;
-                    copyProd.codeId = -1;
-                    copyProd.amountAvailable = 0;
+                    cloneProd.price = 0;
+                    cloneProd.codeId = -1;
+                    cloneProd.amountAvailable = 0;
 
                 }
 
@@ -183,21 +202,27 @@ void av7() {
     scanf("%d", &size);
 
     /* CRIANDO UM VETOR */
-    Vector vector[size];
-    vector[0].id = 1;
-    vector[1].id = 2;
-    vector[2].id = 3;
+    Vector *vector = (Vector *) malloc(size * sizeof(Vector));
+
+    for (int i = 0; i < size; i++)
+        vector[i].id = randNumber(1, 100);
 
     /* LIBERANDO ESPAÇO */
-    //free(vector);
+    free(vector);
 
-    //CRIANDO UM NOVO VETOR
-    Vector newVector[size];
-    newVector[0].id = 4;
-    newVector[1].id = 5;
-    newVector[2].id = 6;
+    // CRIANDO UM NOVO VETOR
+    Vector *newVector = (Vector *) malloc(size * sizeof(Vector));
 
-    /* EFETUANDO A SOMA DE 2 VETORES */
+    for (int i = 0; i < size; i++)
+        newVector[i].id = randNumber(1, 100);
+
+    // ALOCANDO NOVAMENTE O PRIMEIRO VETOR, JÁ QUE FOI FEITO A LIBERAÇÃO DO MESMO
+    vector = (Vector *) malloc(size * sizeof(Vector));
+
+    for (int i = 0; i < size; i++)
+        vector[i].id = randNumber(1, 100);
+
+    /* EFETUANDO A SOMA DOIS 2 VETORES */
 
     Vector baseVector[size];
 
