@@ -2,59 +2,61 @@
 
 typedef struct {
     int item[MAX_SIZE];
-} Stack;
+} Queue;
 
-Stack queue;
-int top;
+Queue queueStruct;
+int queueEnd, queueStart;
 
-void initStack() {
-    top = -1;
+void queueInit() {
+    queueEnd = -1;
+    queueStart = -1;
 }
 
-int empty() {
-    return top == -1;
+int queueEmpty() {
+    return queueStart == -1;
 }
 
-int full() {
-    return top == (MAX_SIZE - 1);
+int queueFull() {
+    return queueEnd == (MAX_SIZE - 1);
 }
 
-void push(Stack *stack, int item) {
+void queue(int item) {
 
-    if (full()) {
+    if (queueFull()) {
         printf("Pilha cheia!");
         exit(EXIT_FAILURE);
     }
 
-    stack->item[top++] = item;
+    if (queueStart == -1)
+        queueStart = 0;
+
+    queueStruct.item[++queueEnd] = item;
 }
 
-int pop(Stack *stack) {
+int dequeue() {
 
-    if (empty()) {
+    if (queueEmpty()) {
         printf("\n Pilha vazia!");
         exit(EXIT_FAILURE);
     }
 
-    return stack->item[top--];
+    return queueStruct.item[++queueStart];
 }
 
-void call() {
+void callQueue() {
 
-    initStack();
+    queueInit();
 
-    push(&queue, 10);
-    push(&queue, 20);
-    push(&queue, 30);
-    push(&queue, 40);
-    push(&queue, 50);
+    queue(10);
+    queue(20);
+    queue(30);
+    queue(40);
+    queue(50);
 
-    printf("\nTopo: %d", top);
+    dequeue();
+    dequeue();
+    dequeue();
 
-    pop(&queue);
-    pop(&queue);
-    pop(&queue);
-
-    printf("\nTopo: %d", top);
+    printf("Fila -> %d", queueStruct.item[queueStart]);
 
 }
