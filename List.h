@@ -1,6 +1,8 @@
 typedef struct NodeList {
 
-    int value;
+    char nome[100];
+    int matricula;
+
     struct NodeList *node;
 
 } List;
@@ -27,29 +29,22 @@ List *newElementList() {
     return newList;
 }
 
-void insertInLeft(int value) {
-
-    List *newList = newElementList();
+void insertInLeft(List *newList) {
 
     List *aux = headList;
-    newList->value = value;
     newList->node = aux;
     headList = newList;
 
 }
 
-void insertInRight(int value) {
-
-    List *newList = newElementList();
+void insertInRight(List *newList) {
 
     if (emptyList()) {
 
-        free(newList);
-        insertInLeft(value);
+        insertInLeft(newList);
 
     } else {
 
-        newList->value = value;
         newList->node = NULL;
 
         List *next = headList;
@@ -70,9 +65,6 @@ void removeInLeft() {
     }
 
     List *aux = headList;
-
-    // if (aux->node == NULL)
-    //   printf("TESTER");
 
     headList = aux->node;
 
@@ -121,30 +113,75 @@ void viewList() {
     List *aux = headList;
 
     while (aux != NULL) {
-        printf("(%d)", aux->value);
+        printf("(%s) - [%d]\n", aux->nome, aux->matricula);
         aux = aux->node;
     }
 
 }
 
+List *getAluno() {
+
+    List *newList = newElementList();
+
+    system("cls");
+    getchar();
+
+    printf("\nDigite o nome do aluno: ");
+    scanf("%[0-9a-zA-Z,. ]", newList->nome);
+
+    printf("\nDigite a matricula do aluno: ");
+    scanf("%d", &newList->matricula);
+
+    return newList;
+}
+
+void executeFunction(int code) {
+
+    if (code == 1) {
+
+        insertInRight(getAluno());
+
+    } else if (code == 2) {
+
+        insertInLeft(getAluno());
+
+    } else if (code == 3) {
+
+        removeInRight();
+
+    } else if (code == 4) {
+
+        removeInLeft();
+
+    } else if (code < 1 || code > 5) {
+        return;
+    }
+
+    viewList();
+
+}
+
 void callList() {
 
-    insertInLeft(4);
-    insertInLeft(6);
-    insertInRight(9);
+    initList();
 
-    viewList();
+    printf("Selecao de alunos: ");
 
-    removeInLeft();
+    int code = 0;
 
-    viewList();
+    do {
 
-    removeInRight();
+        printf("\nDigite alguma das opcoes abaixo:\n");
+        printf("\n1 - Inserir aluno no fim da lista.");
+        printf("\n2 - Inserir aluno no comeco da lista.");
+        printf("\n3 - Remover aluno do fim da lista.");
+        printf("\n4 - Remover aluno do comeco da lista.");
+        printf("\n5 - Exibir a lista de alunos.");
+        printf("\n0 - Sair da aplicacao.");
 
-    viewList();
+        scanf("%d", &code);
+        executeFunction(code);
 
-    removeInLeft();
-
-    viewList();
+    } while (code > 0);
 
 }
