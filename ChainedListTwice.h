@@ -113,6 +113,7 @@ void removeInLeftTwiceList() {
     twiceList = aux->after;
 
     free(aux);
+    aux = NULL;
 
 }
 
@@ -235,8 +236,6 @@ void callTwiceList() {
 
         scanf("%d", &code);
 
-        system("cls");
-
         if (code == 1) {
 
             TwiceList *element = newTwiceList();
@@ -277,6 +276,7 @@ void callTwiceList() {
             printf("\n1 - Remover do inicio.");
             printf("\n2 - Remover do meio.");
             printf("\n3 - Remover do fim.");
+            getchar();
 
             int function = 0;
             scanf("%d", &function);
