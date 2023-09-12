@@ -14,7 +14,7 @@
 
 int main() {
 
-    callEx2();
+    callTwiceList();
 
 }
 

@@ -1,6 +1,8 @@
 typedef struct NodeChainedTwice {
 
-    int number;
+    char name[100];
+    int cpf;
+
     struct NodeChainedTwice *before, *after;
 
 } TwiceList;
@@ -28,9 +30,21 @@ TwiceList *newTwiceList() {
 }
 
 void insertInLeftTwiceList(TwiceList *newList) {
-    newList->before = NULL;
-    newList->after = twiceList;
-    twiceList = newList;
+
+    if (twiceList == NULL) {
+
+        newList->before = NULL;
+        newList->after = NULL;
+        twiceList = newList;
+
+    } else {
+
+        twiceList->before = newList;
+        newList->after = twiceList;
+        twiceList = newList;
+
+    }
+
 }
 
 void insertInRightTwiceList(TwiceList *newList) {
@@ -41,23 +55,156 @@ void insertInRightTwiceList(TwiceList *newList) {
 
     } else {
 
+        TwiceList *aux = twiceList;
+
+        while (aux->after != NULL)
+            aux = aux->after;
+
+        aux->after = newList;
+        newList->before = aux;
         newList->after = NULL;
 
-        TwiceList *next = twiceList;
-
-        while (next->after != NULL)
-            next = next->after;
-
-        newList->before = next;
-        next->after = newList;
     }
 
+}
+
+void insertInMidTwiceList(int fromCpf, TwiceList *newList) {
+
+    if (emptyTwiceList()) {
+
+        insertInLeftTwiceList(newList);
+
+    } else {
+
+        TwiceList *aux = twiceList;
+
+        if (aux->after == NULL) {
+            insertInRightTwiceList(newList);
+            return;
+        }
+
+        while (aux->after != NULL) {
+
+            if (aux->cpf == fromCpf) {
+                newList->after = aux->after;
+                newList->before = aux;
+                aux->after = newList;
+                return;
+            }
+
+            aux = aux->after;
+
+        }
+
+        insertInRightTwiceList(newList);
+
+    }
+
+}
+
+void removeInLeftTwiceList() {
+
+    if (emptyTwiceList()) {
+        printf("\nLista vazia!");
+        exit(EXIT_FAILURE);
+    }
+
+    TwiceList *aux = twiceList;
+    twiceList = aux->after;
+
+    free(aux);
+
+}
+
+void removeInRightTwiceList() {
+
+    if (emptyTwiceList()) {
+        printf("\nLista vazia!");
+        exit(EXIT_FAILURE);
+    }
+
+    TwiceList *aux = twiceList;
+
+    if (aux->after == NULL) {
+
+        free(aux);
+        aux = NULL;
+
+    } else {
+
+        while (aux->after != NULL)
+            aux = aux->after;
+
+        aux->before->after = NULL;
+        aux->before = NULL;
+
+        free(aux);
+        aux = NULL;
+
+    }
+
+}
+
+void removeInMidTwiceList(int cpf) {
+
+    if (emptyTwiceList()) {
+        printf("\nLista vazia!");
+        exit(EXIT_FAILURE);
+    }
+
+    TwiceList *aux = twiceList;
+
+    if (aux->cpf == cpf) {
+
+        removeInLeftTwiceList();
+
+    } else {
+
+        while (aux->after != NULL) {
+
+            aux = aux->after;
+
+            if (aux->cpf == cpf)
+                break;
+
+        }
+
+        aux->before = aux->before->after = aux->after;
+
+        free(aux);
+        aux = NULL;
+
+    }
+
+}
+
+TwiceList *findUserByName(char nome[100]) {
+
+    if (emptyTwiceList()) {
+        printf("\nLista Vazia!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    TwiceList *aux = twiceList;
+
+    while (aux->after != NULL) {
+
+        if (strcmp(aux->name, nome) == 0) {
+            printf("tester");
+            return aux;
+        }
+
+        aux = aux->after;
+
+    }
+
+    return aux;
 }
 
 void viewTwiceList() {
 
     if (emptyTwiceList()) {
-        printf("\nFila Vazia!\n");
+        printf("\nLista Vazia!\n");
         exit(EXIT_FAILURE);
     }
 
@@ -66,30 +213,104 @@ void viewTwiceList() {
     TwiceList *aux = twiceList;
 
     while (aux != NULL) {
-        printf("[%d]\n", aux->number);
+        printf("\nNome: %s - CPF[%d]", aux->name, aux->cpf);
         aux = aux->after;
     }
 
-}
-
-TwiceList *addElement(int number) {
-
-    TwiceList *element = newTwiceList();
-    element->number = number;
-
-    return element;
 }
 
 void callTwiceList() {
 
     initTwiceList();
 
-    for (int i = 0; i < 5; i++)
-        insertInLeftTwiceList(addElement(i));
+    int code = 0;
 
-    for (int i = 5; i < 10; i++)
-        insertInRightTwiceList(addElement(i));
+    do {
 
-    viewTwiceList();
+        printf("\nEscolha uma das funcoes:");
+        printf("\n1 - Inserir usuario.");
+        printf("\n2 - Remover usuario");
+        printf("\n3 - Procurar usuario");
+        printf("\n0 - Sair da aplicacao.");
+
+        scanf("%d", &code);
+
+        system("cls");
+
+        if (code == 1) {
+
+            TwiceList *element = newTwiceList();
+
+            getchar();
+            printf("Digite o nome do usuario:");
+            scanf("%[0-9a-zA-Z,. ]", element->name);
+            printf("\nDigite o CPF do usuario: ");
+            scanf("%d", &element->cpf);
+
+            printf("Opcoes:");
+            printf("\n1 - Adicionar no inicio.");
+            printf("\n2 - Adicionar no meio.");
+            printf("\n3 - Adicionar no fim.");
+
+            int function = 0;
+            scanf("%d", &function);
+
+            if (function == 1) {
+                insertInLeftTwiceList(element);
+            } else if (function == 2) {
+
+                viewTwiceList();
+
+                printf("Escolha a partir de onde voce deseja inserir o usuario:");
+                int cpf = 0;
+                scanf("%d", &cpf);
+
+                insertInMidTwiceList(cpf, element);
+
+            } else if (function == 3) {
+                insertInRightTwiceList(element);
+            }
+
+        } else if (code == 2) {
+
+            printf("Opcoes:");
+            printf("\n1 - Remover do inicio.");
+            printf("\n2 - Remover do meio.");
+            printf("\n3 - Remover do fim.");
+
+            int function = 0;
+            scanf("%d", &function);
+
+            if (function == 1) {
+                removeInLeftTwiceList();
+            } else if (function == 2) {
+
+                int cpf = 0;
+
+                printf("Digite o CPF do usuario para remover:");
+                scanf("%d", &cpf);
+
+                removeInMidTwiceList(cpf);
+
+            } else if (function == 3) {
+                removeInRightTwiceList();
+            }
+
+        } else if (code == 3) {
+
+            char name[100];
+            getchar();
+            printf("\nDigite o nome do usuario que deseja encontrar:");
+            scanf("%[0-9a-zA-Z,. ]", name);
+
+            TwiceList *user = findUserByName(name);
+            printf("\nNome: %s", user->name);
+            printf("\nCpf: %d", user->cpf);
+
+        } else if (code > 0) {
+            printf("\nOpcao invalida");
+        }
+
+    } while (code != 0);
 
 }
