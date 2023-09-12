@@ -10,10 +10,11 @@
 #include "List.h"
 #include "ChainedList.h"
 #include "ChainedListTwice.h"
+#include "Avaliacao2.h"
 
 int main() {
 
-    callTwiceList();
+    callEx2();
 
 }
 

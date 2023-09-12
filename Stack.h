@@ -39,7 +39,7 @@ int pop() {
     return stack.item[top--];
 }
 
-void stackCall() {
+void callStack() {
 
     initStack();
 
