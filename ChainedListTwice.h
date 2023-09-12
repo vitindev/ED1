@@ -191,7 +191,6 @@ TwiceList *findUserByName(char nome[100]) {
     while (aux->after != NULL) {
 
         if (strcmp(aux->name, nome) == 0) {
-            printf("tester");
             return aux;
         }
 
