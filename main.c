@@ -8,10 +8,12 @@
 #include "Queue.h"
 #include "StackDynamic.h"
 #include "List.h"
+#include "ChainedList.h"
+#include "ChainedListTwice.h"
 
 int main() {
 
-    callList();
+    callTwiceList();
 
 }
 
