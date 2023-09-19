@@ -11,10 +11,11 @@
 #include "ChainedList.h"
 #include "ChainedListTwice.h"
 #include "Avaliacao2.h"
+#include "ThreeBinary.h"
 
 int main() {
 
-    callTwiceList();
+    callThreeBinary();
 
 }
 
