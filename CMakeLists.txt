@@ -8,4 +8,5 @@ add_executable(ED1 main.c BankSimple.h Pointer.h Stack.h Avaliacao1.h Queue.h St
         ChainedList.h
         ChainedListTwice.h
         Avaliacao2.h
-        ThreeBinary.h)
+        ThreeBinary.h
+        Avaliacao3.h)

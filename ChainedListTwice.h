@@ -17,6 +17,47 @@ int emptyTwiceList() {
     return twiceList == NULL;
 }
 
+void MoveMenor() {
+
+    if (emptyTwiceList()) {
+        exit(EXIT_FAILURE);
+    }
+
+    int menor = INT_MAX;
+
+    TwiceList *aux = twiceList;
+
+    while (aux->after != NULL) {
+
+        if (aux->cpf < menor)
+            menor = aux->cpf;
+
+        aux = aux->after;
+    }
+
+    aux = twiceList;
+    TwiceList *otherAux = NULL;
+
+    while (aux->after != NULL) {
+
+        if (aux->cpf == menor) {
+
+            while (aux->before != NULL) {
+
+                otherAux = aux->before;
+                aux = aux->before;
+                aux->before = aux;
+                aux->after = otherAux;
+
+            }
+
+        }
+
+        aux = aux->after;
+    }
+
+}
+
 TwiceList *newTwiceList() {
 
     TwiceList *newList = (TwiceList *) malloc(sizeof(TwiceList));
@@ -307,6 +348,11 @@ void callTwiceList() {
             printf("\nCpf: %d", user->cpf);
 
         } else if (code > 0) {
+
+
+            MoveMenor();
+            viewTwiceList();
+
             printf("\nOpcao invalida");
         }
 

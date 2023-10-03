@@ -1,149 +1,129 @@
+#define MAX_SIZE 5
+
 typedef struct NodeList {
-
-    char nome[100];
-    int matricula;
-
-    struct NodeList *node;
-
+    int number, next;
 } List;
 
-List *headList;
+List *headList[MAX_SIZE];
+int tail = -1, size = 0, head = -1;
 
-void initList() {
-    headList = NULL;
-}
+void insertInLeft(int number) {
 
-int emptyList() {
-    return headList == NULL;
-}
-
-List *newElementList() {
-
-    List *newList = (List *) malloc(sizeof(List));
-
-    if (newList == NULL) {
-        printf("\nMemory Error!\n");
+    if (size >= MAX_SIZE)
         exit(EXIT_FAILURE);
-    }
 
-    return newList;
+    headList[size]->number = number;
+    headList[size]->next = head;
+    head = size;
+
+    if (tail == -1)
+        tail = size;
+
+    size++;
 }
 
-void insertInLeft(List *newList) {
+void insertInRight(int number) {
 
-    List *aux = headList;
-    newList->node = aux;
-    headList = newList;
+    if (size >= MAX_SIZE)
+        exit(EXIT_FAILURE);
 
-}
+    headList[size]->number = number;
+    headList[size]->next = -1;
 
-void insertInRight(List *newList) {
+    if (tail != -1)
+        headList[tail]->next = size;
 
-    if (emptyList()) {
+    tail = size;
 
-        insertInLeft(newList);
+    if (head == -1)
+        head = size;
 
-    } else {
-
-        newList->node = NULL;
-
-        List *next = headList;
-
-        while (next->node != NULL)
-            next = next->node;
-
-        next->node = newList;
-    }
-
+    size++;
 }
 
 void removeInLeft() {
 
-    if (emptyList()) {
-        printf("\nFila Vazia!\n");
-        exit(EXIT_FAILURE);
+    if (head == -1) {
+        printf("A lista está vazia. Não é possível remover elementos.\n");
+        return;
     }
 
-    List *aux = headList;
+    int indexToRemove = head;
+    head = headList[indexToRemove]->next;
 
-    headList = aux->node;
+    if (head == -1) {
+        tail = -1;
+    }
 
-    free(aux);
-    aux = NULL;
+    size--;
 }
 
 void removeInRight() {
 
-    if (emptyList()) {
-        printf("\nFila Vazia!\n");
-        exit(EXIT_FAILURE);
+    if (tail == -1) {
+        printf("A lista está vazia. Não é possível remover elementos.\n");
+        return;
     }
 
-    if (headList->node == NULL) {
-
-        free(headList);
-        headList = NULL;
-
+    if (head == tail) {
+        head = -1;
+        tail = -1;
     } else {
 
-        List *aux = headList;
+        int current = head;
 
-        while (aux->node->node != NULL)
-            aux = aux->node;
+        while (headList[current]->next != tail)
+            current = headList[current]->next;
 
-        List *remove = aux->node;
 
-        free(remove);
-        remove = NULL;
-
-        aux->node = NULL;
+        tail = current;
+        headList[current]->next = -1;
     }
+
+    size--;
 
 }
 
 void viewList() {
 
-    if (emptyList()) {
+    if (head == -1) {
         printf("\nFila Vazia!\n");
         exit(EXIT_FAILURE);
     }
 
     printf("\nLista Atual\n");
 
-    List *aux = headList;
+    int current = head;
 
-    while (aux != NULL) {
-        printf("(%s) - [%d]\n", aux->nome, aux->matricula);
-        aux = aux->node;
+    while (current != -1) {
+        printf("[%d]\n", headList[current]->number);
+        current = headList[current]->next;
     }
 
 }
 
-List *getAluno() {
-
-    List *newList = newElementList();
+int getNumber() {
 
     system("cls");
     getchar();
 
-    printf("\nDigite o nome do aluno: ");
-    scanf("%[0-9a-zA-Z,. ]", newList->nome);
+    int number = 0;
 
-    printf("\nDigite a matricula do aluno: ");
-    scanf("%d", &newList->matricula);
+    printf("\nDigite o numero: ");
+    scanf("%d", &number);
 
-    return newList;
+    return number;
 }
 
 void executeFunction(int code) {
 
     if (code == 1) {
 
-        insertInRight(getAluno());
+        insertInRight(getNumber());
 
     } else if (code == 2) {
 
-        insertInLeft(getAluno());
+        insertInLeft(getNumber());
 
     } else if (code == 3) {
 
@@ -163,20 +143,18 @@ void executeFunction(int code) {
 
 void callList() {
 
-    initList();
-
-    printf("Selecao de alunos: ");
+    printf("Selecao de numeros: ");
 
     int code = 0;
 
     do {
 
         printf("\nDigite alguma das opcoes abaixo:\n");
-        printf("\n1 - Inserir aluno no fim da lista.");
-        printf("\n2 - Inserir aluno no comeco da lista.");
-        printf("\n3 - Remover aluno do fim da lista.");
-        printf("\n4 - Remover aluno do comeco da lista.");
-        printf("\n5 - Exibir a lista de alunos.");
+        printf("\n1 - Inserir numero no fim da lista.");
+        printf("\n2 - Inserir numero no comeco da lista.");
+        printf("\n3 - Remover numero do fim da lista.");
+        printf("\n4 - Remover numero do comeco da lista.");
+        printf("\n5 - Exibir a lista de numeros.");
         printf("\n0 - Sair da aplicacao.");
 
         scanf("%d", &code);

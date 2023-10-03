@@ -134,6 +134,23 @@ ChainedList *getChainedAluno() {
     return newList;
 }
 
+void inverter() {
+
+    ChainedList *prev = NULL;
+    ChainedList *current = headChainedList;
+    ChainedList *next = NULL;
+
+    while (current != NULL) {
+        next = current->node;
+        current->node = prev;
+        prev = current;
+        current = next;
+    }
+
+    headChainedList = prev;
+
+}
+
 void chainedFunction(int code) {
 
     if (code == 1) {
@@ -153,6 +170,7 @@ void chainedFunction(int code) {
         removeInLeftChained();
 
     } else if (code < 1 || code > 5) {
+        inverter();
         return;
     }
 
